@@ -1,0 +1,6 @@
+@UDS.Server_HostAddress = http://localhost:5022
+
+GET {{UDS.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
