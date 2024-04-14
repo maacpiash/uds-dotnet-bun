@@ -1,9 +1,16 @@
+const string unixSocketPath = "/tmp/uds-dotnet-bun.sock";
+
+if (File.Exists(unixSocketPath))
+    File.Delete(unixSocketPath);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.WebHost.ConfigureKestrel(options => options.ListenUnixSocket(unixSocketPath));
 
 var todos = new List<Todo>();
 
