@@ -25,6 +25,9 @@ app.MapGet("/todos/{id:guid}", (Guid id) =>
 app.MapPost("/todos", (TodoDTO dto) =>
 {
     var (Id, Title, Done) = dto;
+    Title = Title.Trim();
+    if (Title == string.Empty)
+        return Results.BadRequest("Title cannot be empty.");
     if (Id is not null)
     {
         var existing = todos.Find(todo => todo.Id == Id);
