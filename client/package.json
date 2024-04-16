@@ -8,6 +8,8 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"tw": "tailwindcss -i ./src/app.css -o ./static/tailwind.css",
+		"tw:watch": "tailwindcss -i ./src/app.css -o ./static/tailwind.css --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write ."
 	},
