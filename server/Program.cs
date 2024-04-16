@@ -28,7 +28,7 @@ app.MapGet("/todos/{id:alpha}", (string id) =>
 
 app.MapPost("/todos", (TodoDTO dto) =>
 {
-    var (Id, Title, Done) = dto;
+    var (Id, Title, Deadline, Done) = dto;
     Title = Title.Trim();
     if (Title == string.Empty)
         return Results.BadRequest("Title cannot be empty.");
@@ -38,17 +38,17 @@ app.MapPost("/todos", (TodoDTO dto) =>
         if (existing is not null)
             return Results.Conflict("A todo with this Id already exists!");
     }
-    var todo = new Todo(Id ?? Nanoid.Generate(alphabet, 10), Title, Done);
+    var todo = new Todo(Id ?? Nanoid.Generate(alphabet, 10), Title, Deadline ?? DateTime.Now.AddDays(1), Done);
     todos.Add(todo);
     return Results.Created($"/todos/{todo.Id}", todo);
 });
 
 app.MapPut("/todos/{id:alpha}", (string id, TodoDTO dto) =>
 {
-    var (Id, Title, Done) = dto;
+    var (Id, Title, Deadline, Done) = dto;
     var index = todos.FindIndex(todo => todo.Id == id);
     if (index is -1) return Results.NotFound();
-    todos[index] = todos[index] with { Title = Title, Done = Done };
+    todos[index] = todos[index] with { Title = Title, Deadline = Deadline ?? todos[index].Deadline, Done = Done };
     return Results.Ok();
 });
 
@@ -61,5 +61,5 @@ app.MapDelete("/todos/{id:alpha}", (string id) =>
 
 app.Run();
 
-record Todo(string Id, string Title, bool Done);
-record TodoDTO(string? Id, string Title, bool Done);
+record Todo(string Id, string Title, DateTime Deadline, bool Done);
+record TodoDTO(string? Id, string Title, DateTime? Deadline, bool Done);
