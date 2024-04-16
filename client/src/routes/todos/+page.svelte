@@ -6,7 +6,7 @@
 <article class="flex flex-col md:flex-row justify-center gap-8">
     <form method="POST" action="?/create" use:enhance class="flex flex-col justify-center gap-4 max-w-xs">
         <label class="text-xl font-semibold">
-            Task title
+            Add new task
             <input
                 name="title"
                 type="text"
