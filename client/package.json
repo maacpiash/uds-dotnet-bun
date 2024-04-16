@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "concurrently \"vite dev\" \"bun run tw:watch\"",
+		"dev": "concurrently \"vite dev --host\" \"bun run tw:watch\" -p none --hide 1",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
