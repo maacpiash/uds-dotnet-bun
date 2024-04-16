@@ -1,3 +1,7 @@
+using NanoidDotNet;
+
+const string alphabet = "abcdefghijkmnpqrtwxyz346789ABCDEFGHJKLMNPQRTUVWXY_";
+
 const string unixSocketPath = "/tmp/uds-dotnet-bun.sock";
 
 if (File.Exists(unixSocketPath))
@@ -15,7 +19,7 @@ app.UseHttpsRedirection();
 
 app.MapGet("/todos", () => todos);
 
-app.MapGet("/todos/{id:guid}", (Guid id) =>
+app.MapGet("/todos/{id:alpha}", (string id) =>
 {
     var todo = todos.Find(todo => todo.Id == id);
     if (todo is null) return Results.NotFound();
@@ -34,12 +38,12 @@ app.MapPost("/todos", (TodoDTO dto) =>
         if (existing is not null)
             return Results.Conflict("A todo with this Id already exists!");
     }
-    var todo = new Todo(Id ?? Guid.NewGuid(), Title, Done);
+    var todo = new Todo(Id ?? Nanoid.Generate(alphabet, 10), Title, Done);
     todos.Add(todo);
     return Results.Created($"/todos/{todo.Id}", todo);
 });
 
-app.MapPut("/todos/{id:guid}", (Guid id, TodoDTO dto) =>
+app.MapPut("/todos/{id:alpha}", (string id, TodoDTO dto) =>
 {
     var (Id, Title, Done) = dto;
     var index = todos.FindIndex(todo => todo.Id == id);
@@ -48,7 +52,7 @@ app.MapPut("/todos/{id:guid}", (Guid id, TodoDTO dto) =>
     return Results.Ok();
 });
 
-app.MapDelete("/todos/{id:guid}", (Guid id) =>
+app.MapDelete("/todos/{id:alpha}", (string id) =>
 {
     var removed = todos.RemoveAll(todo => todo.Id == id);
     if (removed is not 0) return Results.NoContent();
@@ -57,5 +61,5 @@ app.MapDelete("/todos/{id:guid}", (Guid id) =>
 
 app.Run();
 
-record Todo(Guid Id, string Title, bool Done);
-record TodoDTO(Guid? Id, string Title, bool Done);
+record Todo(string Id, string Title, bool Done);
+record TodoDTO(string? Id, string Title, bool Done);
