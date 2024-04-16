@@ -25,5 +25,11 @@ export const actions = {
                 'Content-Type': 'application/json',
             },
         })
+    },
+
+    toggle: async ({ request }: RequestEvent) => {
+        const data = await request.formData()
+        const id = data.get('id')
+        console.log(id)
     }
 }
