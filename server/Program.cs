@@ -1,15 +1,14 @@
 using NanoidDotNet;
 
 const string alphabet = "abcdefghijkmnpqrtwxyz346789ABCDEFGHJKLMNPQRTUVWXY_";
+const string udsPath = "/tmp/uds-dotnet-bun.sock";
 
-const string unixSocketPath = "/tmp/uds-dotnet-bun.sock";
-
-if (File.Exists(unixSocketPath))
-    File.Delete(unixSocketPath);
+if (File.Exists(udsPath))
+    File.Delete(udsPath);
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.ConfigureKestrel(options => options.ListenUnixSocket(unixSocketPath));
+builder.WebHost.ConfigureKestrel(options => options.ListenUnixSocket(udsPath));
 
 var todos = new List<Todo>();
 
@@ -38,7 +37,9 @@ app.MapPost("/todos", (TodoDTO dto) =>
         if (existing is not null)
             return Results.Conflict("A todo with this Id already exists!");
     }
-    var todo = new Todo(Id ?? Nanoid.Generate(alphabet, 10), Title, Deadline ?? DateTime.Now.AddDays(1), Done);
+    else Id = Nanoid.Generate(alphabet, 10);
+    var deadline = Deadline ?? DateTime.Now.AddDays(1);
+    var todo = new Todo(Id, Title, deadline, Done);
     todos.Add(todo);
     return Results.Created($"/todos/{todo.Id}", todo);
 });
@@ -48,7 +49,12 @@ app.MapPut("/todos/{id:alpha}", (string id, TodoDTO dto) =>
     var (Id, Title, Deadline, Done) = dto;
     var index = todos.FindIndex(todo => todo.Id == id);
     if (index is -1) return Results.NotFound();
-    todos[index] = todos[index] with { Title = Title, Deadline = Deadline ?? todos[index].Deadline, Done = Done };
+    todos[index] = todos[index] with
+    {
+        Title = Title,
+        Deadline = Deadline ?? todos[index].Deadline,
+        Done = Done
+    };
     return Results.Ok();
 });
 
