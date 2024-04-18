@@ -28,9 +28,9 @@ app.MapGet("/todos/{id:alpha}", (string id) =>
 app.MapPost("/todos", (TodoDTO dto) =>
 {
     var (Id, Title, Deadline, Done) = dto;
-    Title = Title.Trim();
-    if (Title == string.Empty)
+    if (Title is null or "")
         return Results.BadRequest("Title cannot be empty.");
+    Title = Title.Trim();
     if (Id is not null)
     {
         var existing = todos.Find(todo => todo.Id == Id);
@@ -49,6 +49,9 @@ app.MapPut("/todos/{id:alpha}", (string id, TodoDTO dto) =>
     var (Id, Title, Deadline, Done) = dto;
     var index = todos.FindIndex(todo => todo.Id == id);
     if (index is -1) return Results.NotFound();
+    if (Title is null or "")
+        return Results.BadRequest("Title cannot be empty.");
+    Title = Title.Trim();
     todos[index] = todos[index] with
     {
         Title = Title,
@@ -68,4 +71,4 @@ app.MapDelete("/todos/{id:alpha}", (string id) =>
 app.Run();
 
 record Todo(string Id, string Title, DateTime Deadline, bool Done);
-record TodoDTO(string? Id, string Title, DateTime? Deadline, bool Done);
+record TodoDTO(string? Id, string? Title, DateTime? Deadline, bool Done);
