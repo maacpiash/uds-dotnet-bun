@@ -20,7 +20,7 @@ app.MapGet("/todos", () => todos);
 
 app.MapGet("/todos/{id:alpha}", (string id) =>
 {
-    var todo = todos.Find(todo => todo.Id == id);
+    var todo = todos.Find(todo => todo.Id.Equals(id));
     if (todo is null) return Results.NotFound();
     return Results.Ok(todo);
 });
@@ -33,7 +33,7 @@ app.MapPost("/todos", (TodoDTO dto) =>
     Title = Title.Trim();
     if (Id is not null)
     {
-        var existing = todos.Find(todo => todo.Id == Id);
+        var existing = todos.Find(todo => todo.Id.Equals(Id));
         if (existing is not null)
             return Results.Conflict("A todo with this Id already exists!");
     }
@@ -47,7 +47,7 @@ app.MapPost("/todos", (TodoDTO dto) =>
 app.MapPut("/todos/{id:alpha}", (string id, TodoDTO dto) =>
 {
     var (Id, Title, Deadline, Done) = dto;
-    var index = todos.FindIndex(todo => todo.Id == id);
+    var index = todos.FindIndex(todo => todo.Id.Equals(id));
     if (index is -1) return Results.NotFound();
     if (Title is null or "")
         return Results.BadRequest("Title cannot be empty.");
@@ -63,7 +63,7 @@ app.MapPut("/todos/{id:alpha}", (string id, TodoDTO dto) =>
 
 app.MapDelete("/todos/{id:alpha}", (string id) =>
 {
-    var removed = todos.RemoveAll(todo => todo.Id == id);
+    var removed = todos.RemoveAll(todo => todo.Id.Equals(id));
     if (removed is not 0) return Results.NoContent();
     return Results.NotFound();
 });
