@@ -30,6 +30,16 @@ export const actions = {
     toggle: async ({ request }: RequestEvent) => {
         const data = await request.formData()
         const id = data.get('id')
-        console.log(id)
-    }
+        const done = data.get('done') == 'false' // if false, then true -- toggled!
+        return fetch(`http://localhost/todos/${id}`, {
+            unix,
+            method: 'DELETE',
+            body: JSON.stringify({ done }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(console.log)
+            .catch(console.error)
+    },
 }
