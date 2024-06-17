@@ -1,8 +1,13 @@
 using NanoidDotNet;
 
 const string alphabet = "abcdefghijkmnpqrtwxyz346789ABCDEFGHJKLMNPQRTUVWXY_";
+const string udsPath = "/tmp/uds-dotnet-bun.sock";
+
+if (File.Exists(udsPath))
+    File.Delete(udsPath);
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options => options.ListenUnixSocket(udsPath));
 
 var todos = new List<Todo>();
 
