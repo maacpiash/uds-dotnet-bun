@@ -23,10 +23,11 @@
     <ul class="flex flex-col justify-center gap-1">
         {#each data.todos as todo}
             <li>
-                <form class="flex flex-row place-content-center gap-2" method="POST" action="?/toggle" use:enhance>
+                <form class="flex flex-row justify-start gap-2" method="POST" action="?/toggle" use:enhance>
                     <input type="hidden" name="id" value={todo.id} />
+                    <input type="hidden" name="done" value={todo.done} />
                     <label class="cursor-pointer label flex flex-row gap-2">
-                        <span class="label-text text-xl">{todo.title}</span><button
+                        <span class="label-text text-xl" class:line-through={todo.done}>{todo.title}</span><button
                             class="btn btn-sm btn-warning btn-circle btn-outline"
                             ><svg
                                 xmlns="http://www.w3.org/2000/svg"
