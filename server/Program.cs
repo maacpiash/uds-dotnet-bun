@@ -1,6 +1,3 @@
-using NanoidDotNet;
-
-const string alphabet = "abcdefghijkmnpqrtwxyz346789ABCDEFGHJKLMNPQRTUVWXY_";
 const string udsPath = "/tmp/uds-dotnet-bun.sock";
 
 if (File.Exists(udsPath))
@@ -36,16 +33,15 @@ app.MapPost("/todos", (TodoDTO dto) =>
         if (existing is not null)
             return Results.Conflict("A todo with this Id already exists!");
     }
-    else Id = Nanoid.Generate(alphabet, 10);
     var deadline = Deadline ?? DateTime.Now.AddDays(1);
-    var todo = new Todo(Id, Title, deadline, Done);
+    var todo = new Todo(Id ?? Guid.NewGuid(), Title, deadline, Done);
     todos.Add(todo);
     return Results.Created($"/todos/{todo.Id}", todo);
 });
 
-app.MapPut("/todos/{id:alpha}", (string id, TodoDTO dto) =>
+app.MapPut("/todos/{id:guid}", (Guid id, TodoDTO dto) =>
 {
-    var (Id, Title, Deadline, Done) = dto;
+    var (_, Title, Deadline, Done) = dto;
     var index = todos.FindIndex(todo => todo.Id.Equals(id));
     if (index is -1) return Results.NotFound();
     if (Title is null or "")
@@ -60,7 +56,7 @@ app.MapPut("/todos/{id:alpha}", (string id, TodoDTO dto) =>
     return Results.Ok();
 });
 
-app.MapDelete("/todos/{id:alpha}", (string id) =>
+app.MapDelete("/todos/{id:guid}", (string id) =>
 {
     var removed = todos.RemoveAll(todo => todo.Id.Equals(id));
     if (removed is not 0) return Results.NoContent();
@@ -69,5 +65,5 @@ app.MapDelete("/todos/{id:alpha}", (string id) =>
 
 app.Run();
 
-record Todo(string Id, string Title, DateTime Deadline, bool Done);
-record TodoDTO(string? Id, string? Title, DateTime? Deadline, bool Done);
+record Todo(Guid Id, string Title, DateTime Deadline, bool Done);
+record TodoDTO(Guid? Id, string? Title, DateTime? Deadline, bool Done);
