@@ -1,5 +1,5 @@
 export type TodoDTO = {
-    title: string,
+    title: string
     done: boolean
 }
 

@@ -14,7 +14,7 @@ export const actions = {
         const data = await request.formData()
         const formData = {
             title: data.get('title'),
-            done: Boolean(data.get('done'))
+            done: Boolean(data.get('done')),
         }
 
         await fetch('http://localhost/todos', {
@@ -30,7 +30,7 @@ export const actions = {
     toggle: async ({ request }) => {
         const data = await request.formData()
         const id = data.get('id')
-        const done = data.get('done') == 'false' // if false, then true -- toggled!
+        const done = data.get('done') === 'false' // if false, then true -- toggled!
         return fetch(`http://localhost/todos/${id}`, {
             unix,
             method: 'PUT',
