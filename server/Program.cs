@@ -34,7 +34,7 @@ app.MapPost("/todos", (TodoDTO dto) =>
             return Results.Conflict("A todo with this Id already exists!");
     }
     var deadline = Deadline ?? DateTime.Now.AddDays(1);
-    var todo = new Todo(Id ?? Guid.NewGuid(), Title, deadline, Done);
+    var todo = new Todo(Id ?? Guid.NewGuid(), Title, deadline, Done ?? false);
     todos.Add(todo);
     return Results.Created($"/todos/{todo.Id}", todo);
 });
@@ -48,7 +48,7 @@ app.MapPut("/todos/{id:guid}", (Guid id, TodoDTO dto) =>
     {
         Title = string.IsNullOrWhiteSpace(Title) ? todos[index].Title : Title.Trim(),
         Deadline = Deadline ?? todos[index].Deadline,
-        Done = Done
+        Done = Done ?? todos[index].Done,
     };
     return Results.Ok();
 });
@@ -63,4 +63,4 @@ app.MapDelete("/todos/{id:guid}", (string id) =>
 app.Run();
 
 record Todo(Guid Id, string Title, DateTime Deadline, bool Done);
-record TodoDTO(Guid? Id, string? Title, DateTime? Deadline, bool Done);
+record TodoDTO(Guid? Id, string? Title, DateTime? Deadline, bool? Done);
