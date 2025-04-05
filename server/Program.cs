@@ -24,7 +24,7 @@ app.MapGet("/todos/{id:alpha}", (string id) =>
 app.MapPost("/todos", (TodoDTO dto) =>
 {
     var (Id, Title, Deadline, Done) = dto;
-    if (Title is null or "")
+    if (string.IsNullOrWhiteSpace(Title))
         return Results.BadRequest("Title cannot be empty.");
     Title = Title.Trim();
     if (Id is not null)
