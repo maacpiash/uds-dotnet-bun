@@ -33,7 +33,7 @@ export const actions = {
         const done = data.get('done') == 'false' // if false, then true -- toggled!
         return fetch(`http://localhost/todos/${id}`, {
             unix,
-            method: 'DELETE',
+            method: 'PUT',
             body: JSON.stringify({ done }),
             headers: {
                 'Content-Type': 'application/json',

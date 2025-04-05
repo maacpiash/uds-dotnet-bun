@@ -44,12 +44,9 @@ app.MapPut("/todos/{id:guid}", (Guid id, TodoDTO dto) =>
     var (_, Title, Deadline, Done) = dto;
     var index = todos.FindIndex(todo => todo.Id.Equals(id));
     if (index is -1) return Results.NotFound();
-    if (Title is null or "")
-        return Results.BadRequest("Title cannot be empty.");
-    Title = Title.Trim();
     todos[index] = todos[index] with
     {
-        Title = Title,
+        Title = string.IsNullOrWhiteSpace(Title) ? todos[index].Title : Title.Trim(),
         Deadline = Deadline ?? todos[index].Deadline,
         Done = Done
     };
