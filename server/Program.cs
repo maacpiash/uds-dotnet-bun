@@ -44,12 +44,10 @@ app.MapPut("/todos/{id:guid}", (Guid id, TodoDTO dto) =>
     var (_, Title, Deadline, Done) = dto;
     var index = todos.FindIndex(todo => todo.Id.Equals(id));
     if (index is -1) return Results.NotFound();
-    todos[index] = todos[index] with
-    {
-        Title = string.IsNullOrWhiteSpace(Title) ? todos[index].Title : Title.Trim(),
-        Deadline = Deadline ?? todos[index].Deadline,
-        Done = Done ?? todos[index].Done,
-    };
+    var title = string.IsNullOrWhiteSpace(Title) ? todos[index].Title : Title.Trim();
+    var deadline = Deadline ?? todos[index].Deadline;
+    var done = Done ?? todos[index].Done;
+    todos[index] = todos[index] with { Title = title, Deadline = deadline, Done = done };
     return Results.Ok();
 });
 
