@@ -1,6 +1,7 @@
 <script lang="ts">
     import { enhance } from '$app/forms'
-    export let data
+    import type { PageProps } from './$types'
+    const { data }: PageProps = $props()
 </script>
 
 <article class="flex flex-col md:flex-row justify-center gap-8">
@@ -21,26 +22,28 @@
     </form>
 
     <ul class="flex flex-col justify-center gap-1">
-        {#each data.todos as todo}
+        {#each data.todos as todo (todo.id)}
             <li>
                 <form class="flex flex-row justify-start gap-2" method="POST" action="?/toggle" use:enhance>
                     <input type="hidden" name="id" value={todo.id} />
                     <input type="hidden" name="done" value={todo.done} />
-                    <label class="cursor-pointer label flex flex-row gap-2">
-                        <span class="label-text text-xl" class:line-through={todo.done}>{todo.title}</span><button
-                            class="btn btn-sm btn-warning btn-circle btn-outline"
-                            ><svg
+                    <label class="label flex cursor-pointer flex-row gap-2">
+                        <span class="label-text text-xl" class:line-through={todo.done}>{todo.title}</span>
+                        <button class="btn btn-sm btn-warning btn-circle btn-outline" aria-label="Toggle Todo">
+                            <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 class="h-6 w-6"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                ><path
-                                    stroke-linecap="round"
+                            >
+                                <path stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" /></svg
-                            ></button>
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
                     </label>
                 </form>
             </li>

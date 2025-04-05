@@ -1,16 +1,16 @@
 import type { Todo } from '$lib'
-import type { RequestEvent } from '@sveltejs/kit'
+import type { Actions, PageServerLoad } from './$types'
 
 const unix = '/tmp/uds-dotnet-bun.sock'
 
-export async function load() {
+export const load: PageServerLoad = async () => {
     const request = await fetch('http://localhost/todos', { unix })
     const todos: Todo[] = await request.json()
     return { todos }
 }
 
 export const actions = {
-    create: async ({ request }: RequestEvent) => {
+    create: async ({ request }) => {
         const data = await request.formData()
         const formData = {
             title: data.get('title'),
@@ -27,7 +27,7 @@ export const actions = {
         })
     },
 
-    toggle: async ({ request }: RequestEvent) => {
+    toggle: async ({ request }) => {
         const data = await request.formData()
         const id = data.get('id')
         const done = data.get('done') == 'false' // if false, then true -- toggled!
@@ -42,4 +42,4 @@ export const actions = {
             .then(console.log)
             .catch(console.error)
     },
-}
+} satisfies Actions
