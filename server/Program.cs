@@ -5,12 +5,16 @@ if (File.Exists(udsPath))
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.ListenUnixSocket(udsPath));
+builder.Services.AddOpenApi();
 
 var todos = new List<Todo>();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+    app.MapOpenApi();
+else
+    app.UseHttpsRedirection();
 
 app.MapGet("/todos", () => todos);
 
