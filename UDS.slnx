@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/server/">
+    <Project Path="server/UDS.Server.csproj" />
+  </Folder>
+</Solution>
